@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="stats-row">
+  <div class="stat-card"><div class="stat-num">{{ stats['task_count'] }}</div><div class="stat-label">导入任务</div></div>
+  <div class="stat-card"><div class="stat-num">{{ stats['record_count'] }}</div><div class="stat-label">名单总数</div></div>
+  <div class="stat-card ok"><div class="stat-num">{{ stats['success_count'] }}</div><div class="stat-label">上送成功</div></div>
+  <div class="stat-card bad"><div class="stat-num">{{ stats['error_count'] }}</div><div class="stat-label">异常记录</div></div>
+  <div class="stat-card money"><div class="stat-num">¥{{ '%.2f'|format(stats['success_amount']) }}</div><div class="stat-label">成功发放金额</div></div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>导入任务{% if user['role'] != 'admin' %}（{{ user['township'] }}）{% else %}（全部乡镇）{% endif %}</h3>
+    <a class="btn btn-primary" href="{{ url_for('upload') }}">＋ 新建导入</a>
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>任务编号</th><th>文件名</th><th>乡镇</th><th>总行数</th>
+        <th>校验通过</th><th>校验失败</th><th>上送成功</th><th>上送失败</th>
+        <th>状态</th><th>创建时间</th><th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in tasks %}
+      <tr>
+        <td class="mono">{{ t['task_no'] }}</td>
+        <td class="ellipsis" title="{{ t['filename'] }}">{{ t['filename'] }}</td>
+        <td>{{ t['township'] }}</td>
+        <td>{{ t['total_count'] }}</td>
+        <td class="c-ok">{{ t['valid_count'] }}</td>
+        <td class="{{ 'c-bad' if t['invalid_count'] }}">{{ t['invalid_count'] }}</td>
+        <td class="c-ok">{{ t['success_count'] }}</td>
+        <td class="{{ 'c-bad' if t['failed_count'] }}">{{ t['failed_count'] }}</td>
+        <td><span class="badge badge-task-{{ t['status']|lower }}">{{ TASK_STATUS_LABELS.get(t['status'], t['status']) }}</span></td>
+        <td>{{ t['created_at'] }}</td>
+        <td>
+          <a href="{{ url_for('task_detail', task_id=t['id']) }}">详情</a>
+          {% if t['invalid_count'] + t['failed_count'] > 0 %}
+          <a href="{{ url_for('error_list', task_id=t['id']) }}">错误清单</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="11" class="empty">暂无导入任务，点击右上角「新建导入」开始</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

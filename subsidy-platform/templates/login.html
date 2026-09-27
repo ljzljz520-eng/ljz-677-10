@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}登录 · 财政补贴名单导入平台{% endblock %}
+{% block content %}
+<div class="login-wrap">
+  <form class="login-card" method="post">
+    <h2>账号登录</h2>
+    <label>用户名
+      <input name="username" required autofocus autocomplete="username">
+    </label>
+    <label>密码
+      <input name="password" type="password" required autocomplete="current-password">
+    </label>
+    <button class="btn btn-primary btn-block" type="submit">登 录</button>
+    <div class="demo-accounts">
+      <p><strong>演示账号</strong>（不同乡镇数据相互隔离）：</p>
+      <table>
+        <tr><td>城关镇经办人</td><td class="mono">chengguan / 123456</td></tr>
+        <tr><td>东城镇经办人</td><td class="mono">dongcheng / 123456</td></tr>
+        <tr><td>南坪镇经办人</td><td class="mono">nanping / 123456</td></tr>
+        <tr><td>县级管理员</td><td class="mono">admin / admin123</td></tr>
+      </table>
+    </div>
+  </form>
+</div>
+{% endblock %}

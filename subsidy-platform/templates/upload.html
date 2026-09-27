@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card narrow">
+  <div class="card-header"><h3>新建名单导入</h3></div>
+  <form method="post" enctype="multipart/form-data" class="upload-form">
+    <input type="file" name="file" accept=".csv,.xlsx" required>
+    <button class="btn btn-primary" type="submit">上传并校验</button>
+    <a class="btn" href="{{ url_for('download_template') }}">下载导入模板</a>
+  </form>
+  <div class="help">
+    <h4>📋 文件格式要求（.csv 或 .xlsx，首行为表头）</h4>
+    <ul>
+      <li>必需列：<code>姓名</code>、<code>身份证号</code>、<code>银行卡号</code>、<code>发放金额</code>、<code>乡镇</code>（支持常见别名，自动识别）</li>
+      <li>身份证号：18 位，校验出生日期与校验位</li>
+      <li>银行卡号：16-19 位数字，Luhn 算法校验</li>
+      <li>金额：大于 0，最多两位小数，单笔不超过 999,999.99 元</li>
+      <li>乡镇须与当前账号所属乡镇一致（本账号：<b>{{ user['township'] }}</b>）</li>
+      <li>同一身份证号在<b>文件内</b>或<b>历史任务</b>中重复，将判定重复发放</li>
+    </ul>
+    <h4>📤 上送规则</h4>
+    <ul>
+      <li>仅「校验通过」的记录参与上送，每 {{ BATCH_SIZE }} 笔为一批</li>
+      <li>财政平台退回的记录进入错误清单，可导出 CSV，修正后重新导入</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

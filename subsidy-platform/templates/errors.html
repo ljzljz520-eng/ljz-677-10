@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <div class="card-header">
+    <h3>错误清单 · <span class="mono">{{ task['task_no'] }}</span>（共 {{ records|length }} 条）</h3>
+    <div class="actions">
+      <a class="btn btn-primary" href="{{ url_for('export_errors', task_id=task['id']) }}">导出 CSV</a>
+      <a class="btn" href="{{ url_for('task_detail', task_id=task['id']) }}">返回任务</a>
+    </div>
+  </div>
+  <table class="table">
+    <thead>
+      <tr><th>行号</th><th>姓名</th><th>身份证号</th><th>银行卡号</th><th>金额(元)</th><th>乡镇</th><th>错误类型</th><th>错误原因</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td>{{ r['row_number'] }}</td>
+        <td>{{ r['name'] }}</td>
+        <td class="mono">{{ r['id_card'] }}</td>
+        <td class="mono">{{ r['bank_card'] }}</td>
+        <td class="num">{{ '%.2f'|format(r['amount']) }}</td>
+        <td>{{ r['township'] }}</td>
+        <td><span class="badge badge-{{ r['status']|lower }}">{{ '格式校验' if r['status'] == 'INVALID' else '平台退回' }}</span></td>
+        <td class="c-bad">{{ r['error_message'] }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="empty">没有异常记录 🎉</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

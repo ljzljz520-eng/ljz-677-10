@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}财政补贴名单导入平台{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">🏛️ 财政补贴名单导入平台</div>
+  {% if user %}
+  <nav class="topnav">
+    <a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.endpoint == 'dashboard' }}">任务列表</a>
+    <a href="{{ url_for('upload') }}" class="{{ 'active' if request.endpoint == 'upload' }}">新建导入</a>
+  </nav>
+  <div class="userbox">
+    <span>{{ user['display_name'] }} · {{ user['township'] }}</span>
+    <a href="{{ url_for('logout') }}">退出登录</a>
+  </div>
+  {% endif %}
+</header>
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash flash-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+<footer class="footer">财政补贴名单导入平台 · 演示环境</footer>
+</body>
+</html>
